@@ -167,8 +167,7 @@ public class ProxyResource {
 
         String blacklist = request.param("regex");
         int responseCode = parseResponseCode(request.param("status"));
-		String method = request.param("method");
-        proxy.blacklistRequests(blacklist, responseCode, method);
+        proxy.blacklistRequests(blacklist, responseCode);
 
         return Reply.saying().ok();
     }
