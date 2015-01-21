@@ -175,17 +175,11 @@
         </dependency>
 
         <dependency>
-            <groupId>com.google.sitebricks</groupId>
-            <artifactId>sitebricks</artifactId>
-            <version>0.8.3</version>
-        </dependency>
-
-        <dependency>
             <groupId>com.google.inject.extensions</groupId>
             <artifactId>guice-multibindings</artifactId>
             <version>3.0</version>
         </dependency>
-
+<!--
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-core-asl</artifactId>
@@ -197,7 +191,7 @@
             <artifactId>jackson-mapper-asl</artifactId>
             <version>1.7.1</version>
         </dependency>
-
+-->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
@@ -276,7 +270,17 @@
             <scope>test</scope>
         </dependency>
  
-
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-guice</artifactId>
+            <version>3.0.10.Final</version>
+        </dependency>        
+        
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jackson-provider</artifactId>
+            <version>3.0.10.Final</version>
+        </dependency>
 
         <dependency>
             <groupId>junit</groupId>

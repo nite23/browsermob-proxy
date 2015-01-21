@@ -2,8 +2,6 @@ package net.lightbody.bmp.proxy;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.servlet.GuiceServletContextListener;
-import com.google.sitebricks.SitebricksModule;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,15 +12,17 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
-import javax.servlet.ServletContextEvent;
 import net.lightbody.bmp.exception.JettyException;
-import net.lightbody.bmp.proxy.bricks.ProxyResource;
 import net.lightbody.bmp.proxy.guice.ConfigModule;
 import net.lightbody.bmp.proxy.guice.JettyModule;
+import net.lightbody.bmp.proxy.guice.RestModule;
 import net.lightbody.bmp.proxy.util.StandardFormatter;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.log.Log;
+import org.jboss.resteasy.plugins.guice.GuiceResteasyBootstrapServletContextListener;
+import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.slf4j.LoggerFactory;
 
 public class Main {
@@ -34,22 +34,16 @@ public class Main {
     public static void main(String[] args) {
         configureJdkLogging();
 
-        final Injector injector = Guice.createInjector(new ConfigModule(args), new JettyModule(), new SitebricksModule() {
-            @Override
-            protected void configureSitebricks() {
-                scan(ProxyResource.class.getPackage());
-            }
-        });
+        final Injector injector = Guice.createInjector(new ConfigModule(args), new JettyModule(), new RestModule());
 
         LOG.info("Starting BrowserMob Proxy version {}", getVersion());
 
         Server server = injector.getInstance(Server.class);
-        GuiceServletContextListener gscl = new GuiceServletContextListener() {
-            @Override
-            protected Injector getInjector() {
-                return injector;
-            }
-        };
+        ServletContextHandler handler = (ServletContextHandler)server.getHandler();
+        handler.addEventListener(injector.getInstance(GuiceResteasyBootstrapServletContextListener.class));
+        handler.addServlet(new ServletHolder(HttpServletDispatcher.class), "/*");
+        server.setHandler(handler);        
+        
         try {
 			server.start();
 		} catch (Exception e) {
@@ -57,9 +51,6 @@ public class Main {
 			
 			throw new JettyException("Unable to start Jetty server", e);
 		}
-
-        ServletContextHandler context = (ServletContextHandler) server.getHandler();
-        gscl.contextInitialized(new ServletContextEvent(context.getServletContext()));
 
         try {
 			server.join();

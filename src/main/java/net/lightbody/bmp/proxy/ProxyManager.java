@@ -10,9 +10,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 import net.lightbody.bmp.proxy.util.ExpirableMap;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,7 +91,11 @@ public class ProxyManager {
     }
 
     public ProxyServer get(int port) {
-        return proxies.get(port);
+        ProxyServer proxy = proxies.get(port);
+        if(proxy == null){
+            throw new ProxyNotFoundException();
+        }
+        return proxy;
     }
     
     private ProxyServer startProxy(ProxyServer proxy, int port) {
