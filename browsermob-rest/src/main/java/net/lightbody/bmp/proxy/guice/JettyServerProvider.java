@@ -1,4 +1,4 @@
-package net.lightbody.bmp.guice;
+package net.lightbody.bmp.proxy.guice;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
