@@ -16,6 +16,15 @@
 package net.lightbody.bmp.proxy.jetty.jetty.servlet;
 
 
+import net.lightbody.bmp.proxy.jetty.http.EOFException;
+import net.lightbody.bmp.proxy.jetty.http.HttpContext;
+import net.lightbody.bmp.proxy.jetty.http.HttpException;
+import net.lightbody.bmp.proxy.jetty.http.HttpFields;
+import net.lightbody.bmp.proxy.jetty.http.HttpHandler;
+import net.lightbody.bmp.proxy.jetty.http.HttpRequest;
+import net.lightbody.bmp.proxy.jetty.http.HttpResponse;
+import net.lightbody.bmp.proxy.jetty.http.PathMap;
+import net.lightbody.bmp.proxy.jetty.http.Version;
 import net.lightbody.bmp.proxy.jetty.log.LogFactory;
 import net.lightbody.bmp.proxy.jetty.util.*;
 import org.apache.commons.logging.Log;

@@ -15,6 +15,12 @@
 
 package net.lightbody.bmp.proxy.jetty.jetty.servlet;
 
+import net.lightbody.bmp.proxy.jetty.http.Authenticator;
+import net.lightbody.bmp.proxy.jetty.http.HttpRequest;
+import net.lightbody.bmp.proxy.jetty.http.HttpResponse;
+import net.lightbody.bmp.proxy.jetty.http.SSORealm;
+import net.lightbody.bmp.proxy.jetty.http.SecurityConstraint;
+import net.lightbody.bmp.proxy.jetty.http.UserRealm;
 import net.lightbody.bmp.proxy.jetty.log.LogFactory;
 import net.lightbody.bmp.proxy.jetty.util.Credential;
 import net.lightbody.bmp.proxy.jetty.util.Password;

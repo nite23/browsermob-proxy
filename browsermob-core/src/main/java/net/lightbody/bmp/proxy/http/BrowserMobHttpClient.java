@@ -31,7 +31,6 @@ import java.util.zip.Inflater;
 
 import net.lightbody.bmp.core.har.*;
 import net.lightbody.bmp.proxy.BlacklistEntry;
-import net.lightbody.bmp.proxy.Main;
 import net.lightbody.bmp.proxy.Whitelist;
 import net.lightbody.bmp.proxy.util.*;
 import net.sf.uadetector.ReadableUserAgent;
@@ -115,6 +114,9 @@ import org.xbill.DNS.DClass;
  * WARN : Require zlib > 1.1.4 (deflate support)
  */
 public class BrowserMobHttpClient {
+    // No longer getting the version from Main.getVersion().
+    private static final String VERSION = "2.1";
+
 	private static final Logger LOG = LoggerFactory.getLogger(BrowserMobHttpClient.class);
 	
 	private static volatile UserAgentStringParser parser;
@@ -740,7 +742,7 @@ public class BrowserMobHttpClient {
         try {
             // set the User-Agent if it's not already set
             if (method.getHeaders("User-Agent").length == 0) {
-                method.addHeader("User-Agent", "bmp.lightbody.net/" + Main.getVersion());
+                method.addHeader("User-Agent", "bmp.lightbody.net/" + VERSION);
             }
 
             // was the request mocked out?

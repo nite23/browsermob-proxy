@@ -15,6 +15,13 @@
 
 package net.lightbody.bmp.proxy.jetty.jetty.servlet;
 
+import net.lightbody.bmp.proxy.jetty.http.HttpContext;
+import net.lightbody.bmp.proxy.jetty.http.HttpFields;
+import net.lightbody.bmp.proxy.jetty.http.HttpRequest;
+import net.lightbody.bmp.proxy.jetty.http.HttpResponse;
+import net.lightbody.bmp.proxy.jetty.http.InclusiveByteRange;
+import net.lightbody.bmp.proxy.jetty.http.MultiPartResponse;
+import net.lightbody.bmp.proxy.jetty.http.ResourceCache;
 import net.lightbody.bmp.proxy.jetty.log.LogFactory;
 import net.lightbody.bmp.proxy.jetty.util.*;
 import org.apache.commons.logging.Log;

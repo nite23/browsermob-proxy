@@ -16,6 +16,11 @@
 
 package net.lightbody.bmp.proxy.jetty.jetty.servlet;
 
+import net.lightbody.bmp.proxy.jetty.http.HttpConnection;
+import net.lightbody.bmp.proxy.jetty.http.HttpFields;
+import net.lightbody.bmp.proxy.jetty.http.HttpInputStream;
+import net.lightbody.bmp.proxy.jetty.http.HttpRequest;
+import net.lightbody.bmp.proxy.jetty.http.SecurityConstraint;
 import net.lightbody.bmp.proxy.jetty.log.LogFactory;
 import net.lightbody.bmp.proxy.jetty.util.*;
 import org.apache.commons.logging.Log;
@@ -368,7 +373,7 @@ public class ServletHttpRequest
     public String getAuthType()
     {
         String at= _httpRequest.getAuthType();
-        if (at==SecurityConstraint.__BASIC_AUTH)
+        if (at== SecurityConstraint.__BASIC_AUTH)
             return HttpServletRequest.BASIC_AUTH;
         if (at==SecurityConstraint.__FORM_AUTH)
             return HttpServletRequest.FORM_AUTH;
@@ -613,7 +618,7 @@ public class ServletHttpRequest
         if (_inputState!=0 && _inputState!=1)
             throw new IllegalStateException();
         if (_in==null)
-            _in = new ServletIn((HttpInputStream)_httpRequest.getInputStream());  
+            _in = new ServletIn((HttpInputStream)_httpRequest.getInputStream());
         _inputState=1;
         _reader=null;
         return _in;

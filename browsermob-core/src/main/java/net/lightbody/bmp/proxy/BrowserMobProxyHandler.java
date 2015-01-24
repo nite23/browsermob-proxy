@@ -1,6 +1,19 @@
 package net.lightbody.bmp.proxy;
 
-import net.lightbody.bmp.proxy.http.*;
+import net.lightbody.bmp.proxy.http.BadURIException;
+import net.lightbody.bmp.proxy.http.BrowserMobHttpClient;
+import net.lightbody.bmp.proxy.http.BrowserMobHttpRequest;
+import net.lightbody.bmp.proxy.http.BrowserMobHttpResponse;
+import net.lightbody.bmp.proxy.http.RequestCallback;
+import net.lightbody.bmp.proxy.jetty.http.EOFException;
+import net.lightbody.bmp.proxy.jetty.http.HttpException;
+import net.lightbody.bmp.proxy.jetty.http.HttpFields;
+import net.lightbody.bmp.proxy.jetty.http.HttpListener;
+import net.lightbody.bmp.proxy.jetty.http.HttpRequest;
+import net.lightbody.bmp.proxy.jetty.http.HttpResponse;
+import net.lightbody.bmp.proxy.jetty.http.HttpServer;
+import net.lightbody.bmp.proxy.jetty.http.HttpTunnel;
+import net.lightbody.bmp.proxy.jetty.http.SocketListener;
 import net.lightbody.bmp.proxy.jetty.jetty.Server;
 import net.lightbody.bmp.proxy.jetty.util.InetAddrPort;
 import net.lightbody.bmp.proxy.jetty.util.URI;
@@ -15,7 +28,11 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.*;
+import java.net.BindException;
+import java.net.ConnectException;
+import java.net.InetAddress;
+import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
@@ -57,7 +74,7 @@ public class BrowserMobProxyHandler extends SeleniumProxyHandler {
 
     @Override
     public void handleConnect(String pathInContext, String pathParams, HttpRequest request, HttpResponse response) throws HttpException, IOException {
-        java.net.URI uri = request.getURI();
+        URI uri = request.getURI();
         String original = uri.toString();
         String host = original;
         String port = null;
@@ -95,7 +112,7 @@ public class BrowserMobProxyHandler extends SeleniumProxyHandler {
     }
 
     @Override
-    protected SslRelay getSslRelayOrCreateNew(java.net.URI uri, InetAddrPort addrPort, HttpServer server) throws Exception {
+    protected SslRelay getSslRelayOrCreateNew(URI uri, InetAddrPort addrPort, HttpServer server) throws Exception {
         SslRelay relay = super.getSslRelayOrCreateNew(uri, addrPort, server);
         relay.setNukeDirOrFile(null);
 

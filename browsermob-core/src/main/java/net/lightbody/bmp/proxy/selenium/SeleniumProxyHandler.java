@@ -1,17 +1,44 @@
 package net.lightbody.bmp.proxy.selenium;
 
+import net.lightbody.bmp.proxy.jetty.http.HttpConnection;
+import net.lightbody.bmp.proxy.jetty.http.HttpException;
+import net.lightbody.bmp.proxy.jetty.http.HttpFields;
+import net.lightbody.bmp.proxy.jetty.http.HttpMessage;
+import net.lightbody.bmp.proxy.jetty.http.HttpRequest;
+import net.lightbody.bmp.proxy.jetty.http.HttpResponse;
+import net.lightbody.bmp.proxy.jetty.http.HttpServer;
+import net.lightbody.bmp.proxy.jetty.http.HttpTunnel;
+import net.lightbody.bmp.proxy.jetty.http.SslListener;
 import net.lightbody.bmp.proxy.jetty.http.handler.AbstractHttpHandler;
 import net.lightbody.bmp.proxy.jetty.util.IO;
 import net.lightbody.bmp.proxy.jetty.util.InetAddrPort;
 import net.lightbody.bmp.proxy.jetty.util.StringMap;
+import net.lightbody.bmp.proxy.jetty.util.URI;
 import net.lightbody.bmp.proxy.util.ResourceExtractor;
 import net.lightbody.bmp.proxy.util.TrustEverythingSSLTrustManager;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLHandshakeException;
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.net.ConnectException;
+import java.net.HttpURLConnection;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
+import java.net.Proxy;
+import java.net.Socket;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.UnknownHostException;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -148,7 +175,7 @@ public class SeleniumProxyHandler extends AbstractHttpHandler {
 
       /* ------------------------------------------------------------ */
       public void handle(String pathInContext, String pathParams, HttpRequest request, HttpResponse response) throws HttpException, IOException {
-          java.net.URI uri = request.getURI();
+          URI uri = request.getURI();
 
           // Is this a CONNECT request?
           if (HttpRequest.__CONNECT.equalsIgnoreCase(request.getMethod())) {
@@ -440,7 +467,7 @@ public class SeleniumProxyHandler extends AbstractHttpHandler {
 
     /* ------------------------------------------------------------ */
       public void handleConnect(String pathInContext, String pathParams, HttpRequest request, HttpResponse response) throws HttpException, IOException {
-          java.net.URI uri = request.getURI();
+          URI uri = request.getURI();
 
           try {
               log.fine("CONNECT: " + uri);
@@ -501,7 +528,7 @@ public class SeleniumProxyHandler extends AbstractHttpHandler {
           }
       }
 
-      protected SslRelay getSslRelayOrCreateNew(java.net.URI uri, InetAddrPort addrPort, HttpServer server) throws Exception {
+      protected SslRelay getSslRelayOrCreateNew(URI uri, InetAddrPort addrPort, HttpServer server) throws Exception {
           SslRelay listener;
           synchronized(_sslMap) {
               listener = _sslMap.get(uri.toString());
@@ -634,7 +661,7 @@ public class SeleniumProxyHandler extends AbstractHttpHandler {
        * @return The URL to proxy to, or null if the passed URI should not be proxied. The default
        *         implementation returns the passed uri if isForbidden() returns true.
        */
-      protected URL isProxied(java.net.URI uri) throws MalformedURLException {
+      protected URL isProxied(URI uri) throws MalformedURLException {
           // Is this a proxy request?
           if (isForbidden(uri))
               return null;
@@ -650,7 +677,7 @@ public class SeleniumProxyHandler extends AbstractHttpHandler {
        *
        * @return True if the URL is not forbidden. Calls isForbidden(scheme,host,port,true);
        */
-      protected boolean isForbidden(java.net.URI uri) {
+      protected boolean isForbidden(URI uri) {
           String scheme = uri.getScheme();
           String host = uri.getHost();
           int port = uri.getPort();
@@ -696,7 +723,7 @@ public class SeleniumProxyHandler extends AbstractHttpHandler {
        * Send Forbidden. Method called to send forbidden response. Default implementation calls
        * sendError(403)
        */
-      protected void sendForbid(HttpRequest request, HttpResponse response, java.net.URI uri) throws IOException {
+      protected void sendForbid(HttpRequest request, HttpResponse response, URI uri) throws IOException {
           response.sendError(HttpResponse.__403_Forbidden, "Forbidden for Proxy");
       }
 
@@ -752,14 +779,14 @@ public class SeleniumProxyHandler extends AbstractHttpHandler {
           protected void customizeRequest(Socket socket, HttpRequest request)
           {
               super.customizeRequest(socket,request);
-              java.net.URI uri=request.getURI();
+              URI uri=request.getURI();
               // Convert the URI to a proxy URL
               //
               // NOTE: Don't just add a host + port to the request URI, since this causes the URI to
               // get "dirty" and be rewritten, potentially breaking the proxy slightly. Instead,
               // create a brand new URI that includes the protocol, the host, and the port, but leaves
               // intact the path + query string "as is" so that it does not get rewritten.
-              request.setURI(new java.net.URI("https://" + _addr.getHost() + ":" + _addr.getPort() + uri.toString()));
+              request.setURI(new URI("https://" + _addr.getHost() + ":" + _addr.getPort() + uri.toString()));
           }
 
           public void stop() throws InterruptedException {
