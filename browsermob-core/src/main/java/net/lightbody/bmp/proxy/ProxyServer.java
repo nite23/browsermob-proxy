@@ -120,7 +120,9 @@ public class ProxyServer {
     }
 
     public void cleanup() {
-        handler.cleanup();
+        if (handler != null) {
+            handler.cleanup();
+        }
     }
 
     public void stop() {
