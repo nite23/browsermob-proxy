@@ -22,7 +22,8 @@ import java.security.KeyStore;
 
 public abstract class ProxyServerTest {
     static {
-        Main.configureJdkLogging();
+        //FIXME: configure logging another way
+//        Main.configureJdkLogging();
     }
 
     protected ProxyServer proxy = new ProxyServer(8081);
